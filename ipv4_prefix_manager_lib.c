@@ -25,21 +25,21 @@ void init() {
 }
 
 // Returns the value of a bit on particular position of the address
-uint8_t check_mask(uint32_t value, uint8_t position) {
-    if (position < 0 || position > 31) {
+uint8_t check_mask(uint32_t masks, uint8_t pos) {
+    if (pos < 0 || pos > 31) {
         return 0;
     }
 
-    return (value >> (31 - position)) & 1;
+    return (masks >> (31 - pos)) & 1;
 }
 
 // Sets the value of a bit on particular position of the address
-uint32_t set_bit(uint32_t value, uint8_t bit_position, uint8_t bit_value) {
-    if (bit_value == 0) {
-        return value & ~(1U << 32 - bit_position - 1);
+uint32_t set_mask(uint32_t masks, uint8_t pos, uint8_t val) {
+    if (val == 0) {
+        return masks & ~(1U << 32 - pos - 1);
     }
 
-    return value | (1U << 32 - bit_position - 1);
+    return masks | (1U << 32 - pos - 1);
 }
 
 // Check if the prefix exists in the data structure
@@ -87,7 +87,7 @@ int add(unsigned int ip_address, char mask) {
 
     }
 
-    curr->mask = set_bit(curr->mask, mask, 1);
+    curr->mask = set_mask(curr->mask, mask, 1);
 
     return 1;
 }
@@ -165,7 +165,7 @@ int del(unsigned int ip_address, char mask) {
         free(tmp);
     }
 
-    curr->mask = set_bit(curr->mask, mask, 0);
+    curr->mask = set_mask(curr->mask, mask, 0);
 
     return 1;
 }
